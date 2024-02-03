@@ -48,19 +48,20 @@ average_rating= round(df_selection["Rating"].mean(),1)
 star_rating = ":star:"* int(round(average_rating,0))
 average_sales_by_transaction = round(df_selection["Total"].mean(),2)
 
-left_column,middle_column,right_column=st.columns(3)
+left_column,middle_column,right_column=st.columns([1,1,1])
 
 
 with left_column:
-    st.subheader("Total_sales:")
-    st.subheader(f"IND ₹{total_sales:,}")
+    st.subheader("Total_sales :")
+    st.markdown(f"**IND ₹{total_sales:,}**")
 
 with middle_column:
-    st.header("Average Rating:")
-    st.subheader(f"{average_rating}{star_rating}")
+    st.subheader("Average Rating :")
+    st.markdown(f"**{average_rating}  {star_rating}**")
 
 with right_column:
-    st.header("Average Sales Per Transaction")
-    st.header(f"IND ₹{average_sales_by_transaction}")
+    st.subheader("Average Sales Per Transaction :")
+    st.markdown(f"**IND ₹{average_sales_by_transaction}**")
 
 st.markdown("---")
+
