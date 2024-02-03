@@ -9,7 +9,7 @@ st.set_page_config(page_title="Sales Dashboard",
                    layout ="wide")
 
 df = pd.read_excel("supermarkt_sales.xlsx",skiprows=2,header=1)
-st.dataframe(df)
+
 
 st.sidebar.header("Filter Here: ")
 city = st.sidebar.multiselect(
@@ -31,3 +31,36 @@ gender = st.sidebar.multiselect(
     options=df["Gender"].unique(),
     default=df["Gender"].unique()
 )
+
+df_selection = df.query(
+    "City == @city & Customer_type == @customer_type & Gender == @gender"
+)
+
+st.dataframe(df_selection)
+
+# Main Page
+st.title(":bar_chart: Sales Dashboard")
+st.markdown("##")
+
+# Top KPI's
+total_sales = int(df_selection["Total"].sum())
+average_rating= round(df_selection["Rating"].mean(),1)
+star_rating = ":star:"* int(round(average_rating,0))
+average_sales_by_transaction = round(df_selection["Total"].mean(),2)
+
+left_column,middle_column,right_column=st.columns(3)
+
+
+with left_column:
+    st.subheader("Total_sales:")
+    st.subheader(f"IND ₹{total_sales:,}")
+
+with middle_column:
+    st.header("Average Rating:")
+    st.subheader(f"{average_rating}{star_rating}")
+
+with right_column:
+    st.header("Average Sales Per Transaction")
+    st.header(f"IND ₹{average_sales_by_transaction}")
+
+st.markdown("---")
