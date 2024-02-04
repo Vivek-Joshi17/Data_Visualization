@@ -11,6 +11,8 @@ st.set_page_config(page_title="Sales Dashboard",
 df = pd.read_excel("supermarkt_sales.xlsx",skiprows=2,header=1)
 
 
+
+
 st.sidebar.header("Filter Here: ")
 city = st.sidebar.multiselect(
     "Select the city:",
@@ -81,3 +83,40 @@ fig_product_sales.update_layout(
 )
 
 st.plotly_chart(fig_product_sales)
+
+def get_data_from_excel():
+    df["hour"] = pd.to_datetime(df["Time"], format="%H:%M:%S").dt.hour
+    return df
+
+df = get_data_from_excel()
+
+sales_by_hour = df.groupby(by=["hour"])[["Total"]].sum()  # Use df instead of df_selection
+fig_hourly_sales = px.bar(
+    sales_by_hour,
+    x=sales_by_hour.index,
+    y="Total",
+    title="<b>Sales by hour</b>",
+    color_discrete_sequence=["#0083B8"] * len(sales_by_hour),
+    template="plotly_white",
+)
+fig_hourly_sales.update_layout(
+    xaxis=dict(tickmode="linear"),
+    plot_bgcolor="rgba(0,0,0,0)",
+    yaxis=(dict(showgrid=False)),
+)
+st.plotly_chart(fig_hourly_sales)
+
+left_column, right_column = st.columns(2)
+left_column.plotly_chart(fig_hourly_sales, use_container_width=True)
+right_column.plotly_chart(fig_product_sales, use_container_width=True)
+
+
+# ---- HIDE STREAMLIT STYLE ----
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
