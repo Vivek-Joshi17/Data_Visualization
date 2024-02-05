@@ -18,10 +18,61 @@ life_exp_df=pd.read_csv("life_expectancy.csv")
 st.write("\n\n\n")
 st.write("")
 
+
+left_column,right_column = st.columns(2)
+with left_column:
+    st.subheader("Dataframe")
+
+with right_column:
+    st.subheader("Specification of Datframe")
+
+
+
 #Drop Id from the life_exp_dataframe
-st.subheader("Dataframe")
 life_exp_df=life_exp_df.drop(life_exp_df.columns[0],axis=1)
-st.dataframe(life_exp_df)
+
+
+
+left_column,right_column = st.columns(2)
+#for dataframe vizualization 
+with left_column:
+    #updated dataframe
+    st.dataframe(life_exp_df)
+#for dataframe specification 
+with right_column:
+    
+    #country
+    #total number of country present in dataframe
+    total_country = life_exp_df.groupby('Country').size().count()
+    #total_country = life_exp_df.groupby[]'Country'].nunique()
+    st.write(f"Country :- Total number of countries present in the given dataset are {total_country} .")
+    
+    #Country code
+    st.write(f"Country Code :-For uniquely identify country.Same unique values as country i.e. {total_country} .")
+
+    #Year
+    min_year=life_exp_df['Year'].min()# minimun year in dataset
+    max_year = life_exp_df['Year'].max()# maximun year in dataset
+    st.write(f"Year :- The given dataset holds the data from year {min_year} to {max_year} .")
+
+    #Female Life Expectancy 
+    min_female_exp = life_exp_df['Female Life Expectancy'].min()#minimum value in Female Life Expectancy column
+    max_female_exp = life_exp_df['Female Life Expectancy'].max()#maximum value in Female Life Expectancy column
+    st.write(f"Female Life Expectancy  :- The values of this column ranges from {min_female_exp} to { max_female_exp} .")
+
+    #Male Life Expectancy 
+    min_male_exp = life_exp_df['Male Life Expectancy'].min()#minimum value in Female Life Expectancy column
+    max_male_exp = life_exp_df['Male Life Expectancy'].max()#maximum value in Female Life Expectancy column
+    st.write(f"Male Life Expectancy  :- The values of this column ranges from {min_male_exp} to { max_male_exp} .")
+
+    #Population 
+    st.write(f"Population  :- This column holds values of countrie's population for each year .")
+
+    #Life Expectancy Gap
+    neg_value = life_exp_df.loc[life_exp_df['Life Expectancy Gap'] < 0, 'Life Expectancy Gap'].count()
+    pos_value = life_exp_df.loc[life_exp_df['Life Expectancy Gap'] > 0, 'Life Expectancy Gap'].count()
+    st.write(f"Life Expectancy Gap :- Life expectancy gap column holds {round(neg_value)} negative value and {round(pos_value)} positive values for {total_country} over the year")
+
 
 st.markdown('---')
 
