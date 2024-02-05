@@ -41,6 +41,7 @@ with left_column:
 #for dataframe specification 
 with right_column:
     
+    st.write("")# for optimal gap
     #country
     #total number of country present in dataframe
     total_country = life_exp_df.groupby('Country').size().count()
@@ -71,15 +72,20 @@ with right_column:
     #Life Expectancy Gap
     neg_value = life_exp_df.loc[life_exp_df['Life Expectancy Gap'] < 0, 'Life Expectancy Gap'].count()
     pos_value = life_exp_df.loc[life_exp_df['Life Expectancy Gap'] > 0, 'Life Expectancy Gap'].count()
-    st.write(f"Life Expectancy Gap :- Life expectancy gap column holds {round(neg_value)} negative value and {round(pos_value)} positive values for {total_country} over the year")
+    st.write(f"Life Expectancy Gap :- Life expectancy gap column holds {round(neg_value)} negative value and {round(pos_value)} positive values for {total_country} over the year .")
 
 
 st.markdown('---')
 
+#Subheading for graph 
+st.subheader("Analysing the Population vs Life Expectancy gap of a country ")
+st.write("")
+
+# Function which on passing country name returns object fig which holds animated graph of countries life exp gap vs population
 def individual_(country):
     temp_df=life_exp_df[life_exp_df['Country']==country]
-    x_min = temp_df['Population'].min()-100000000
-    x_max = temp_df['Population'].max()+100000000
+    x_min = temp_df['Population'].min()-temp_df['Population'].min()/25
+    x_max = temp_df['Population'].max()+temp_df['Population'].max()/25
 
     y_min = temp_df['Life Expectancy Gap'].min()-3
     y_max = temp_df['Life Expectancy Gap'].max()+3
@@ -89,5 +95,33 @@ def individual_(country):
     
     return fig
 
-figure = individual_('India')
-st.plotly_chart(figure)
+unique_country = life_exp_df['Country'].unique()
+
+# Custom CSS to reduce the width of the select box
+custom_css = """
+    <style>
+        div[data-baseweb="select"] {
+            max-width: 200px;  
+        }
+    </style>
+"""
+
+# Apply custom CSS
+st.markdown(custom_css, unsafe_allow_html=True)
+
+left_column,right_column = st.columns(2)
+
+with right_column:
+    selected_country=st.selectbox("Select country ",unique_country)
+    custom_width = 1000
+    custom_height = 1000
+    figure = individual_(selected_country)
+    st.plotly_chart(figure, use_container_width=False, width=custom_width, height=custom_height)
+
+with left_column:
+    st.write("")
+    st.markdown(f"##### With the help of this graph we can easily visualize change in the Life expectancy gap with respect to the population over the year .")
+    st.write("")
+    st.markdown("##### If we take an example of Algeria we can easily see the change in life expectancy gap dering (1950 - 2020). On analysing the graph we observe a sudden decrease in Life Expectancy column around 1955 and again exponential increase in life expectancy gap around 1964 .")
+
+
