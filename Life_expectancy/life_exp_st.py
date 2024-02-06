@@ -111,6 +111,7 @@ st.markdown(custom_css, unsafe_allow_html=True)
 
 left_column,right_column = st.columns(2)
 
+#This column conatins animate graph
 with right_column:
     selected_country=st.selectbox("Select country ",unique_country)
     custom_width = 1000
@@ -118,10 +119,62 @@ with right_column:
     figure = individual_(selected_country)
     st.plotly_chart(figure, use_container_width=False, width=custom_width, height=custom_height)
 
+#Implementaion of graph as case study
 with left_column:
     st.write("")
     st.markdown(f"##### With the help of this graph we can easily visualize change in the Life expectancy gap with respect to the population over the year .")
     st.write("")
-    st.markdown("##### If we take an example of Algeria we can easily see the change in life expectancy gap dering (1950 - 2020). On analysing the graph we observe a sudden decrease in Life Expectancy column around 1955 and again exponential increase in life expectancy gap around 1964 .")
+    st.markdown("#### -->Case Study of Algeria")
+    st.markdown("##### If we study the case of Algeria we can easily see the change in life expectancy gap dering (1950 - 2020). On analysing the graph we observe a sudden decrease in Life Expectancy column around 1955 and again exponential increase in life expectancy gap around 1964 .")
+    st.markdown("##### On further research we learned that during that period Algeria was on war.The Algerian War (also known as the Algerian Revolution or the Algerian War of Independence)[nb 1] was a major armed conflict between France and the Algerian National Liberation Front (FLN) from 1954 to 1962, which led to Algeria winning its independence from France.[33] An important decolonization war, it was a complex conflict characterized by guerrilla warfare and war crimes. ")
+
+st.markdown("---")
 
 
+
+st.header("Bar Graph ")
+st.write("")
+st.markdown("##### To make it more easier to read the changes in Female Life Expectancy, Male Life Expectancy and Life Expectancy Gap of the country over the year")
+st.markdown("##### I have enabled log function for so that Life Expectancy Gap can be seen comparable to Female Life Expectancy and Male Life expectancy")
+st.write("")
+#function which works on life_exp_df to plot the graph for a country which is being passed in it
+def plot_bar_(country):
+
+    #dummy df
+    plot_bar_df = life_exp_df[life_exp_df['Country'] == country]
+
+    #pdropping all other column except country,country code and population
+    plot_bar_df = plot_bar_df.drop(['Country', 'Country Code', 'Population'], axis=1)
+    
+    #Setting Year as index for dummy df
+    plot_bar_df.set_index('Year', inplace=True)
+
+    #Apeeding value on list based on if life expectancy gap is positive or negative
+    PosNeg = []
+    for i in plot_bar_df['Life Expectancy Gap']:
+        if i < 0:
+            PosNeg.append(0)
+        else:
+            PosNeg.append(1)
+    
+    #Entering new column to determine if life expectancy gap is postitive or negative
+    plot_bar_df['PosNeg'] = PosNeg
+
+    #coverting life expectancy values to absolute value for easier plotting
+    plot_bar_df['Life Expectancy Gap'] = plot_bar_df['Life Expectancy Gap'].abs()
+
+    #ploting bar graph
+    fig = px.bar(plot_bar_df, x=plot_bar_df.index, y=(['Male Life Expectancy', 'Female Life Expectancy', 'Life Expectancy Gap']), barmode='group', title=country)
+    fig.update_traces(marker=dict(color=plot_bar_df['PosNeg'].map({0: 'cyan', 1: 'purple'})), selector=dict(name='Life Expectancy Gap'))
+    
+    # Adjust width and height of the plot
+    fig.update_layout(width=1800, height=600)
+
+    return fig
+
+#Randomly selecting country
+random_country = st.selectbox("select country",unique_country)
+figure = plot_bar_(random_country)
+st.plotly_chart(figure)
+
+st.markdown("---")
