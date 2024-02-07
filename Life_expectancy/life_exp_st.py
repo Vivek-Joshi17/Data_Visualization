@@ -7,6 +7,7 @@ st.set_page_config(page_title="Life Expectancy :)",
                    page_icon="chart_with_upwards_trend",
                    layout="wide")
 
+
 st.header('Life Expectancy Analysis')
 st.write(f"In this case study we are going to analyse Life Expectancy Dataset from Kaggle.We are going to compare Male and Female Life expectancy gap in each country with its increase population.")
 
@@ -31,7 +32,7 @@ with right_column:
 #Drop Id from the life_exp_dataframe
 life_exp_df=life_exp_df.drop(life_exp_df.columns[0],axis=1)
 
-
+unique_country_list=life_exp_df['Country'].unique().tolist()
 
 left_column,right_column = st.columns(2)
 #for dataframe vizualization 
@@ -113,7 +114,7 @@ left_column,right_column = st.columns(2)
 
 #This column conatins animate graph
 with right_column:
-    selected_country=st.selectbox("Select country ",unique_country)
+    selected_country=st.selectbox("Select country ",unique_country_list,index=unique_country_list.index("Algeria"))
     custom_width = 1000
     custom_height = 1000
     figure = individual_(selected_country)
@@ -172,9 +173,58 @@ def plot_bar_(country):
 
     return fig
 
+import numpy as np
+
 #Randomly selecting country
-random_country = st.selectbox("select country",unique_country)
+
+
+
+# Create the selectbox with default value
+random_country = st.selectbox("Select country", unique_country_list, index=unique_country_list.index("India"))
 figure = plot_bar_(random_country)
 st.plotly_chart(figure)
 
 st.markdown("---")
+
+
+
+#comparision between any two  country
+#header for the next para
+st.header("Line chart for the comparision between two counties")
+st.write("")
+st.markdown("###### PLotting the comparision chart between two countries on the basis of female life expectancy, male life expectancy , life expectancy gap .")
+st.write("")
+#Displaying two select box in which user is going to select any two countries for comparision
+selectd_country_1=st.selectbox("Select 1st country",unique_country_list,index=unique_country_list.index("India"))
+selectd_country_2 = st.selectbox("Select 2nd country",unique_country_list, index=unique_country_list.index("China"))
+
+#Function to plot line chart for comparision
+def comparision_(country1,country2):
+
+    #Dataframe of the selected countries
+    dummy_df_1= life_exp_df[(life_exp_df['Country'] == country1) | (life_exp_df['Country'] == country2)]
+    
+    #Graph plot between female life expectancy vs year
+    fig1 = px.line(dummy_df_1, x="Year", y="Female Life Expectancy", color="Country", hover_name="Country",log_y=True,title="Female Life Exp vs Year")
+    #Graph plot between male life expectancy vs year
+    fig2 = px.line(dummy_df_1, x="Year", y="Male Life Expectancy", color="Country", hover_name="Country",log_y=True,title="Male Life Exp vs Year")
+    #Graph plot between life expectancy gap vs year 
+    fig3 = px.line(dummy_df_1, x="Year", y="Life Expectancy Gap", color="Country", hover_name="Country",title="Life Exp Gapvs Year")
+
+    #return figures
+    return fig1,fig2,fig3
+
+#figure1, figure2 ,figure3 holds the values after return 
+figure1,  figure2, figure3 = comparision_(selectd_country_1,selectd_country_2)
+
+#three column for displaying graph
+left_column,middle_column,right_column=st.columns(3)
+
+#Displaying graph in three column
+with left_column:
+    figure1
+with middle_column:
+    figure2
+with right_column:
+    figure3
+    
