@@ -79,7 +79,7 @@ with right_column:
 st.markdown('---')
 
 #Subheading for graph 
-st.subheader("Analysing the Population vs Life Expectancy gap of a country ")
+st.header("Analysing the Population vs Life Expectancy gap of a country ")
 st.write("")
 
 # Function which on passing country name returns object fig which holds animated graph of countries life exp gap vs population
@@ -190,9 +190,9 @@ st.markdown("---")
 
 #comparision between any two  country
 #header for the next para
-st.header("Line chart for the comparision between two counties")
+st.header("Line chart for the comparision between two countries")
 st.write("")
-st.markdown("###### PLotting the comparision chart between two countries on the basis of female life expectancy, male life expectancy , life expectancy gap .")
+st.markdown("###### Plotting the comparision chart between two countries on the basis of female life expectancy, male life expectancy , life expectancy gap .")
 st.write("")
 #Displaying two select box in which user is going to select any two countries for comparision
 selectd_country_1=st.selectbox("Select 1st country",unique_country_list,index=unique_country_list.index("India"))
@@ -228,3 +228,8 @@ with middle_column:
 with right_column:
     figure3
     
+
+st.markdown("##### We can easily see progress in Female life expectancy, Male life Expectancy and Life expectancy gap over the year")
+st.markdown("*Female and Male life expectancy values for china in 1950 is not given in dataset*")
+
+st.markdown("---")
