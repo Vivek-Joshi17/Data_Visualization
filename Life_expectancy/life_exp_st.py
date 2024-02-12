@@ -233,3 +233,28 @@ st.markdown("##### We can easily see progress in Female life expectancy, Male li
 st.markdown("*Female and Male life expectancy values for china in 1950 is not given in dataset*")
 
 st.markdown("---")
+
+# dummy = life_exp_df[life_exp_df['Country'] == "India"]
+# st.plotly_chart(px.histogram(dummy,x="Year",y=["Male Life Expectancy","Female Life Expectancy"]))
+
+
+st.header("Ploting the histogram ")
+st.write("")
+selected_country_hist =st.selectbox('Select Country',unique_country_list)
+left_column,right_column = st.columns(2)
+def histo_country(country):
+
+    with left_column:
+        dummy = life_exp_df[life_exp_df["Country"] == country].drop(['Country Code','Population'],axis=1)
+        st.dataframe(dummy)
+
+    
+
+    with right_column:
+        st.plotly_chart(px.histogram(dummy,x='Year',y=['Female Life Expectancy','Male Life Expectancy'],title=f'Histograme of Male/Female Life Expectancy of {country}'),width=800)
+    
+
+histo_country(selected_country_hist)
+
+
+st.header('Histogram for life expectancy of all country ')
