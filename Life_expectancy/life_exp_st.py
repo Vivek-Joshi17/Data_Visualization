@@ -236,25 +236,90 @@ st.markdown("---")
 
 # dummy = life_exp_df[life_exp_df['Country'] == "India"]
 # st.plotly_chart(px.histogram(dummy,x="Year",y=["Male Life Expectancy","Female Life Expectancy"]))
+st.header('Plot for male/female life expectancy of all country') 
 
+def plot_mean_life_expectancy():
+    # Group the DataFrame by year and calculate the mean life expectancy for males and females
+    mean_life_exp_df = life_exp_df.groupby('Year').agg({'Male Life Expectancy': 'mean', 'Female Life Expectancy': 'mean'}).reset_index()
+    
+    # Plot the mean life expectancy using Plotly Express
+    fig = px.line(mean_life_exp_df, x='Year', y=['Male Life Expectancy', 'Female Life Expectancy'], title='Mean Life Expectancy Over the Years')
+    
+    return fig
+
+# Call the function to get the plot
+figure = plot_mean_life_expectancy()
+
+# Display the plot using Streamlit
+st.plotly_chart(figure)
 
 st.header("Ploting the histogram ")
 st.write("")
 selected_country_hist =st.selectbox('Select Country',unique_country_list)
-left_column,right_column = st.columns(2)
+
 def histo_country(country):
 
-    with left_column:
+    
         dummy = life_exp_df[life_exp_df["Country"] == country].drop(['Country Code','Population'],axis=1)
         st.dataframe(dummy)
 
     
 
-    with right_column:
-        st.plotly_chart(px.histogram(dummy,x='Year',y=['Female Life Expectancy','Male Life Expectancy'],title=f'Histograme of Male/Female Life Expectancy of {country}'),width=800)
+    
+        st.plotly_chart(px.histogram(dummy,x='Year',y=['Female Life Expectancy','Male Life Expectancy'],title=f'Histograme of Male/Female Life Expectancy of {country}',nbins=145,barmode='group',width=1600,height=600))
     
 
 histo_country(selected_country_hist)
 
+#Plotting a bubble map using plotly express
+st.markdown("---")
 
-st.header('Histogram for life expectancy of all country ')
+st.header("Visualizing the male life expectancy in world graph")
+
+left_column,right_column = st.columns(2)
+
+with left_column:
+    df=life_exp_df
+
+    df_sorted = df.sort_values('Year')
+
+    fig = px.scatter_geo(df_sorted,
+                    locations = 'Country',
+                    locationmode = 'country names', 
+                    color = 'Male Life Expectancy',
+                    color_continuous_scale = 'viridis',
+                    hover_name = 'Country',
+                    size = "Male Life Expectancy",
+                    projection = "natural earth",
+                    animation_frame = 'Year',
+                    title='Male Life Expectancy')
+
+    #show plot
+    st.plotly_chart(fig)
+
+with right_column:
+    df=life_exp_df
+
+    df_sorted = df.sort_values('Year')
+
+    fig = px.scatter_geo(df_sorted,
+                    locations = 'Country',
+                    locationmode = 'country names', 
+                    color = 'Female Life Expectancy',
+                    color_continuous_scale = 'viridis',
+                    hover_name = 'Country',
+                    size = "Female Life Expectancy",
+                    projection = "natural earth",
+                    animation_frame = 'Year',
+                    title='Female Life Expectancy')
+
+    #show plot
+    st.plotly_chart(fig)
+
+
+
+
+
+
+
+
